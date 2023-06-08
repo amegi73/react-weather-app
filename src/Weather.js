@@ -2,22 +2,23 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Weather.css";
 
-export default function Weather() {
-  const [ready, setReady] = useState(false);
-  const [weatherData, setWeatherData] = useState({});
+export default function Weather(props) {
+  const [weatherData, setWeatherData] = useState({ ready: false });
   function handleResponse(response) {
     console.log(response.data);
     setWeatherData({
+      ready: true,
       temperature: response.data.temperature.current,
       humidity: response.data.temperature.humidity,
+      description: response.data.condition.description,
+      iconUrl: `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/broken-clouds-day.png`,
       wind: response.data.wind.speed,
       city: response.data.city,
+      date: "Thursday 09:20",
     });
-
-    setReady(true);
   }
 
-  if (ready) {
+  if (weatherData.ready) {
     return (
       <div className="Weather">
         <form>
@@ -41,15 +42,15 @@ export default function Weather() {
         </form>
         <h1>{weatherData.city}</h1>
         <ul>
-          <li>Wednesday 17:00</li>
-          <li>{weatherData.description}</li>
+          <li>{weatherData.date}</li>
+          <li className="text-capitalize">{weatherData.description}</li>
         </ul>
         <div className="row mt-3">
           <div className="col-6">
             <div className="clearfix">
               <img
-                src="https://ssl.gstatic.com/onebox/weather/64/partly_cloudy.png"
-                alt="Mostly sunny"
+                src={weatherData.iconUrl}
+                alt={weatherData.description}
                 className="float-left"
               />
 
@@ -70,8 +71,8 @@ export default function Weather() {
     );
   } else {
     let apiKey = "9a0e0d34f1bf60b115a34e7o3fdf2a7t";
-    let city = "New York";
-    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+
+    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${props.defaultCity}&key=${apiKey}&units=metric`;
     axios.get(apiUrl).then(handleResponse);
 
     return "Loading..";
