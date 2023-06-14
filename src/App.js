@@ -10,6 +10,7 @@ export default function App() {
         <footer>
           This project was coded with ❤️ by Amelie Gitti and is {""}
           <a
+            className="git"
             href="https://github.com/amegi73/react-weather-app"
             target="_blank"
             rel="noreferrer"
